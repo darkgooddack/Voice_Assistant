@@ -7,9 +7,11 @@ import speech_recognition as sr
 import pyttsx3
 import telebot
 import json
+from datetime import datetime
 
 engine = pyttsx3.init()
 engine.setProperty('rate', 160)
+bot = telebot.TeleBot('6873601461:AAFb89VE2_-hAXUarsQWJ5apSCdTk1DkMoY')
 
 def music():
     webbrowser.open('https://www.youtube.com/watch?v=e_Ms6YXnQsc&ab_channel=kizaru-Topic', new=2)
@@ -38,7 +40,7 @@ def passive():
     pass
 
 def proect():
-    project_path = "D:\\myapp"
+    project_path = "D:\\мой 3 курс\\Python\\the_applicant's_assistant"
     os.startfile(project_path)
 
 def search_movie():
@@ -82,25 +84,55 @@ def openAI():
 
     voice.speaker(out)
 
+def picture():
+    pass
 
+def create_project():
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    project_name = f"{timestamp}"
+    print("work")
+    project_path = f"D:\\PythonProjects\\{project_name}"
+    try:
+        os.makedirs(project_path, exist_ok=True)
+        print("work2")
+        subprocess.run(["pycharm", project_path])
+        speaker(f"Проект {project_name} создан в PyCharm")
+        os.startfile(project_path)
+        print("work3")
+    except Exception as e:
+        print(f"Failed to create project: {e}")
+        speaker("Не удалось создать проект")
 
+def get_chat_id(contact_name):
+    try:
+        user = bot.get_chat(contact_name)
+        return user.id
+    except Exception as e:
+        print(f"Failed to get chat ID: {e}")
+        return None
 
-def telegram2():
-    # Замените 'YOUR_BOT_TOKEN' на токен вашего бота
-    bot = telebot.TeleBot('6873601461:AAFb89VE2_-hAXUarsQWJ5apSCdTk1DkMoY')
+def telegramto():
+    speaker("Кому вы хотите отправить сообщение?")
+    contact_name = input("Введите имя контакта: ")
+    speaker("Диктуйте сообщение")
+    message = input("Введите сообщение: ")
+    speaker(f"Вы хотите отправить следующее сообщение контакту {contact_name}: {message}? Скажите 'отправляй' для подтверждения.")
+    confirmation = input("Подтверждение (отправляй/нет): ")
+    if confirmation.lower() == 'отправляй':
+        chat_id = get_chat_id(contact_name)  # Implement this function to get the chat ID by contact name
+        if chat_id:
+            speak_and_send_message(chat_id, message)
+        else:
+            speaker(f"Контакт {contact_name} не найден")
+    else:
+        speaker("Сообщение не отправлено")
 
-    # Функция для отправки сообщения в чат
-    def send_message(chat_id, message):
-        bot.send_message(chat_id, message)
+# Function to send a message to a chat
+def send_message(chat_id, message):
+    bot.send_message(chat_id, message)
 
-    # Функция для синтеза речи и отправки сообщения в чат
-    def speak_and_send_message(chat_id, text):
-        engine = pyttsx3.init()
-        engine.say(text)
-        engine.runAndWait()
-        send_message(chat_id, text)
-
-    # Пример использования
-    chat_id = '1741279318'  # Замените на ваш chat_id
-    message = "Привет! Это сообщение отправлено из Python!"
-    speak_and_send_message(chat_id, message)
+# Function to synthesize speech and send a message to a chat
+def speak_and_send_message(chat_id, text):
+    engine.say(text)
+    engine.runAndWait()
+    send_message(chat_id, text)

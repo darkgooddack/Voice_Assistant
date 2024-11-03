@@ -10,8 +10,6 @@ from telegram import Bot
 import openai
 import os
 
-
-
 q = queue.Queue()
 model = vosk.Model('model_small')
 
@@ -22,6 +20,7 @@ samplerate = int(sd.query_devices(device[0], 'input')['default_samplerate'])
 def callback(indata, frames, time, status):
 
     q.put(bytes(indata))
+
 
 def recognize(data, vectorizer, clf):
 
